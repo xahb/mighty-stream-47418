@@ -44,8 +44,8 @@ server = Flask(__name__)
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
-    bot.reply_to(message, 'Привет, ' + unicode(message.from_user.first_name) + '!')
-    #bot.reply_to(message, 'Привет!')
+    #bot.reply_to(message, 'Привет, ' + unicode(message.from_user.first_name) + '!')
+    bot.reply_to(message, 'Привет!' + ' вжжжж')
 
 @bot.message_handler(commands=['help'])
 def help_command(message):
@@ -53,9 +53,9 @@ def help_command(message):
 
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['text'])
 def private_message(message):
-    if re.search("[Кк]ин[оцч]|[Фф]ильм", message.text):
+    if re.search('[Кк]ин[оцч]|[Фф]ильм', message.text):
         scenarios.movie_scenario(message,bot)
-    elif re.search("[Аа]н[еи]к", message.text):
+    elif re.search('[Аа]н[еи]к', message.text):
         scenarios.anek_scenario(message, bot)
     else:
         #bot.reply_to(message, hzpool[int(round(random()*len(hzpool)))])
@@ -63,10 +63,10 @@ def private_message(message):
 
 @bot.message_handler(func=lambda message: message.chat.type=='group', content_types=['text'])
 def group_message(message):
-    if re.search("[Бб]о+т|[Пп][её]+с", message.text):
-        if re.search("[Кк]ин[оцч]|[Фф]ильм", message.text):
+    if re.search('[Бб]о+т|[Пп][её]+с', message.text):
+        if re.search('[Кк]ин[оцч]|[Фф]ильм', message.text):
             scenarios.movie_scenario(message,bot)
-        elif re.search("[Аа]н[еи]к", message.text):
+        elif re.search('[Аа]н[еи]к', message.text):
             scenarios.anek_scenario(message, bot)
         else:
             #bot.reply_to(message, hzpool[round(random()*len(hzpool))])
