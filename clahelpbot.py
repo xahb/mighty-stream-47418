@@ -34,7 +34,7 @@ class NeighborSampler(BaseEstimator):
 #from sklearn.externals import joblib
 #dale_chatbot = joblib.load('dale_chatbot2.pkl', encoding='bytes')
 import pickle
-with open('dale_chatbot2.pkl', 'rb') as fh:
+with open('dale_chatbot2.pickle', 'rb') as fh:
     dale_chatbot = pickle.load(fh)
 
 token = os.environ['TOKEN']
