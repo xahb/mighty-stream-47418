@@ -31,11 +31,11 @@ class NeighborSampler(BaseEstimator):
             result.append(np.random.choice(index, p=softmax(distance * self.temperature)))
         return self.y_[result]
 
-from sklearn.externals import joblib
-dale_chatbot = joblib.load('dale_chatbot2.pkl', encoding='bytes')
-#import pickle
-#with open('dale_chatbot.pkl', 'rb') as fh:
-#    dale_chatbot = pickle.load(fh)
+#from sklearn.externals import joblib
+#dale_chatbot = joblib.load('dale_chatbot2.pkl', encoding='bytes')
+import pickle
+with open('dale_chatbot2.pkl', 'rb') as fh:
+    dale_chatbot = pickle.load(fh, encoding='bytes')
 
 token = os.environ['TOKEN']
 bot = telebot.TeleBot(token)
