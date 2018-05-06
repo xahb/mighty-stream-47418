@@ -35,7 +35,7 @@ class NeighborSampler(BaseEstimator):
 #dale_chatbot = joblib.load('dale_chatbot2.pkl', encoding='bytes')
 import pickle
 with open('dale_chatbot2.pkl', 'rb') as fh:
-    dale_chatbot = pickle.load(fh, encoding='bytes')
+    dale_chatbot = pickle.load(fh)
 
 token = os.environ['TOKEN']
 bot = telebot.TeleBot(token)
@@ -57,8 +57,8 @@ def private_message(message):
     elif re.search("[Аа]н[еи]к", message.text):
         scenarios.anek_scenario(message, bot)
     else:
-        bot.reply_to(message, hzpool[round(random()*len(hzpool))])
-        #bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
+        #bot.reply_to(message, hzpool[round(random()*len(hzpool))])
+        bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
 
 @bot.message_handler(func=lambda message: message.chat.type=='group', content_types=['text'])
 def group_message(message):
@@ -68,8 +68,8 @@ def group_message(message):
         elif re.search("[Аа]н[еи]к", message.text):
             scenarios.anek_scenario(message, bot)
         else:
-            bot.reply_to(message, hzpool[round(random()*len(hzpool))])
-            #bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
+            #bot.reply_to(message, hzpool[round(random()*len(hzpool))])
+            bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
 
          
 
