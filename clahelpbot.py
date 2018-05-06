@@ -32,7 +32,7 @@ class NeighborSampler(BaseEstimator):
         return self.y_[result]
 
 from sklearn.externals import joblib
-dale_chatbot = joblib.load('dale_chatbot.pkl')
+dale_chatbot = joblib.load('dale_chatbot2.pkl')
 #import pickle
 #with open('dale_chatbot.pkl', 'rb') as fh:
 #    dale_chatbot = pickle.load(fh)
