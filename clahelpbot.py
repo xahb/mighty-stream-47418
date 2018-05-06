@@ -64,7 +64,7 @@ def private_message(message):
 
 @bot.message_handler(func=lambda message: message.chat.type=='group', content_types=['text'])
 def group_message(message):
-    if re.search('[Бб]о+т|[Пп][её]+с', message.text):
+    #if re.search('[Бб]о+т|[Пп][её]+с', message.text):
         if re.search('[Кк]ин[оцч]|[Фф]ильм', message.text):
             scenarios.movie_scenario(message,bot)
         elif re.search('[Аа]н[еи]к', message.text):
