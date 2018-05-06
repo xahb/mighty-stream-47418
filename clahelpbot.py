@@ -11,6 +11,7 @@ import scenarios
 import numpy as np
 from sklearn.neighbors import BallTree
 from sklearn.base import BaseEstimator
+from dale_chatbotclass import softmax
 from dale_chatbotclass import NeighborSampler
 from sklearn.externals import joblib
 dale_chatbot = joblib.load('dale_chatbot.pkl')
