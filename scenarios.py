@@ -15,7 +15,7 @@ def anek_scenario(message, bot):
         theme=isthematic.group(0)[4:]
         aneksfound = pool_search(anekpool, endcut_base(theme))
         if len(aneksfound)>1:
-            chosen=aneksfound[round(random()*len(aneksfound))]
+            chosen=aneksfound[int(round(random()*len(aneksfound)))]
             bot.reply_to(message, anekpool[chosen])
             #anek_candidates=aneksfound
         elif len(aneksfound)==1:
@@ -23,7 +23,7 @@ def anek_scenario(message, bot):
         else:
             bot.reply_to(message, "Не знаю таких")
     else:
-        bot.reply_to(message, anekpool[round(random()*len(anekpool))])
+        bot.reply_to(message, anekpool[int(round(random()*len(anekpool)))])
         
         
 def movie_scenario(message, bot):
@@ -75,7 +75,7 @@ def movie_scenario(message, bot):
     movie_candidates = cur.fetchall()
     
     if len(movie_candidates)>0:
-        movie_rand = movie_candidates[round(random()*len(movie_candidates))][0]
+        movie_rand = movie_candidates[int(round(random()*len(movie_candidates)))][0]
     
         cur.execute('SELECT name_ru, name_en, year, rating_kp, votes_kp, genres from "tomatoes1000" WHERE movie_id='+str(movie_rand))
         movie = cur.fetchall()

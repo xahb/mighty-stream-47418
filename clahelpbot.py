@@ -44,7 +44,7 @@ server = Flask(__name__)
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
-    bot.reply_to(message, 'Привет, ' + message.from_user.first_name + '!')
+    bot.reply_to(message, str('Привет, ') + message.from_user.first_name + str('!'))
 
 @bot.message_handler(commands=['help'])
 def help_command(message):
@@ -57,7 +57,7 @@ def private_message(message):
     elif re.search("[Аа]н[еи]к", message.text):
         scenarios.anek_scenario(message, bot)
     else:
-        bot.reply_to(message, hzpool[round(random()*len(hzpool))])
+        bot.reply_to(message, hzpool[int(round(random()*len(hzpool)))])
         #bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
 
 @bot.message_handler(func=lambda message: message.chat.type=='group', content_types=['text'])
