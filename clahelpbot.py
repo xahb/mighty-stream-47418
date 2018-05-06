@@ -44,8 +44,8 @@ server = Flask(__name__)
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
-    #bot.reply_to(message, 'Привет, ' + unicode(message.from_user.first_name) + '!')
-    bot.reply_to(message, 'Привет!' + ' вжжжж')
+    bot.reply_to(message, 'Привет, ' + unicode(message.from_user.first_name, encoding='utf-8') + '!')
+    #bot.reply_to(message, 'Привет!' + ' вжжжж')
 
 @bot.message_handler(commands=['help'])
 def help_command(message):
