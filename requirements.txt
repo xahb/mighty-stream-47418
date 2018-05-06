@@ -1,15 +1,14 @@
 certifi==2018.4.16
-click==6.7
-Flask==0.12.2
-itsdangerous==0.24
-Jinja2==2.9.6
-MarkupSafe==0.23
-numpy==1.12.1
+click==6.7=py36_0
+Flask==0.12.2=py36_0
+itsdangerous==0.24=py36_0
+Jinja2==2.9.6=py36_0
+MarkupSafe==0.23=py36_2
+numpy==1.12.1=py36_0
 psycopg2==2.7.4
-requests==2.14.2
-scikit-learn==0.18.1
-scipy==0.19.0
-sklearn==0.0
+requests==2.14.2=py36_0
+scikit-learn==0.18.1=np112py36_1
+scipy==0.19.0=np112py36_0
 telebot==0.0.3
-Werkzeug==0.12.2
+Werkzeug==0.12.2=py36_0
 
