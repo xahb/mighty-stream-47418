@@ -3,15 +3,21 @@
 import os
 import re
 from random import random
+import pickle
+import pandas as pd
 
 import telebot
 from flask import Flask, request
-from answers import hzpool
-import scenarios
 import numpy as np
 from sklearn.neighbors import BallTree
 from sklearn.base import BaseEstimator
-import numpy as np
+#import numpy as np
+from psycopg2 import connect, cursor
+
+from answers import hzpool
+import scenarios
+
+
 
 def softmax(x):
     proba=np.exp(-x)
@@ -31,9 +37,6 @@ class NeighborSampler(BaseEstimator):
             result.append(np.random.choice(index, p=softmax(distance * self.temperature)))
         return self.y_[result]
 
-#from sklearn.externals import joblib
-#dale_chatbot = joblib.load('dale_chatbot2.pkl', encoding='bytes')
-import pickle
 with open('dale_chatbot2.pickle', 'rb') as fh:
     dale_chatbot = pickle.load(fh)
 
@@ -41,6 +44,9 @@ token = os.environ['TOKEN']
 bot = telebot.TeleBot(token)
 server = Flask(__name__)
 
+#DATABASE_URL = os.environ['DATABASE_URL']
+#conn = connect(DATABASE_URL, sslmode='require')
+memebase = pd.read_csv("memebase.csv")
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
@@ -51,6 +57,14 @@ def start_command(message):
 @bot.message_handler(commands=['help'])
 def help_command(message):
     bot.reply_to(message, '''Можешб обращаться "бот" или "пёс"''')
+    
+@bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['photo'])
+def write_photo(message):
+    #cur = conn.cursor()
+    #cur.execute("INSERT INTO memebase (num, data) VALUES (%s, %s)", ())
+    new_row = {'message_id':message.message_id,'from_user':message.from_user,'date':message.date,'chat':message.chat,'id':memebase.shape[0]}
+    memebase.append(pd.DataFrame(new_row,index=[new_row.shape[0]]))
+    memebase.to_csv('memebase.csv',index=False)
 
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['text'])
 def private_message(message):
@@ -58,6 +72,9 @@ def private_message(message):
         scenarios.movie_scenario(message,bot)
     elif re.search('[Аа]н[еи]к', message.text):
         scenarios.anek_scenario(message, bot)
+    elif re.search('[Мм]ем', message.text):
+        row = memebase[int(np.random(memebase.shape[0])),:]
+        bot.forward_message(message.chat, row['chat'], row['message_id'])
     else:
         #bot.reply_to(message, hzpool[int(round(random()*len(hzpool)))])
         bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
