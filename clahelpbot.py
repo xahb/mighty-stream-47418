@@ -12,7 +12,7 @@ import numpy as np
 from sklearn.neighbors import BallTree
 from sklearn.base import BaseEstimator
 #import numpy as np
-from psycopg2 import connect, cursor
+#from psycopg2 import connect
 
 from answers import hzpool
 import scenarios
