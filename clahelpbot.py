@@ -46,7 +46,9 @@ server = Flask(__name__)
 
 #DATABASE_URL = os.environ['DATABASE_URL']
 #conn = connect(DATABASE_URL, sslmode='require')
-memebase = pd.read_csv('memebase.csv')
+#memebase = pd.read_csv('memebase.csv')
+with open('memebase.pickle', 'rb') as mb:
+    memebase = pickle.load(mb) 
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
@@ -63,8 +65,10 @@ def write_photo(message):
     #cur = conn.cursor()
     #cur.execute("INSERT INTO memebase (num, data) VALUES (%s, %s)", ())
     new_row = {'message_id':message.message_id,'from_user':message.from_user,'date':message.date,'chat':message.chat,'id':memebase.shape[0]}
-    memebase.append(pd.DataFrame(new_row,index=[new_row.shape[0]]))
-    memebase.to_csv('memebase.csv',index=False)
+    memebase = memebase.append(pd.DataFrame(new_row,index=[memebase.shape[0]]))
+    #memebase.to_csv('memebase.csv',index=False)
+    with open('memebase.pickle', 'wb') as mb:
+        pickle.dump(memebase, mb)
 
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['text'])
 def private_message(message):
