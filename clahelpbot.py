@@ -46,7 +46,7 @@ server = Flask(__name__)
 
 #DATABASE_URL = os.environ['DATABASE_URL']
 #conn = connect(DATABASE_URL, sslmode='require')
-memebase = pd.read_csv("memebase.csv")
+memebase = pd.read_csv('memebase.csv')
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
