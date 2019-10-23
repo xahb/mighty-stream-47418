@@ -62,7 +62,7 @@ def start_command(message):
 def help_command(message):
     bot.reply_to(message, '''Можешб обращаться "бот" или "пёс"''')
     
-@bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['photo'])
+@bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['photo','document'])
 def write_photo(message,memebase=memebase):
     #cur = conn.cursor()
     #cur.execute("INSERT INTO memebase (num, data) VALUES (%s, %s)", ())
