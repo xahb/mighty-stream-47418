@@ -9,8 +9,8 @@ import pandas as pd
 import telebot
 from flask import Flask, request
 import numpy as np
-from sklearn.neighbors import BallTree
-from sklearn.base import BaseEstimator
+#from sklearn.neighbors import BallTree
+#from sklearn.base import BaseEstimator
 #import numpy as np
 #from psycopg2 import connect
 
@@ -18,7 +18,7 @@ from answers import hzpool
 import scenarios
 
 
-
+'''
 def softmax(x):
     proba=np.exp(-x)
     return proba / sum(proba)
@@ -36,7 +36,7 @@ class NeighborSampler(BaseEstimator):
         for distance, index in zip(distances, indices):
             result.append(np.random.choice(index, p=softmax(distance * self.temperature)))
         return self.y_[result]
-'''
+
 with open('dale_chatbot2.pickle', 'rb') as fh:
     dale_chatbot = pickle.load(fh)
 '''
