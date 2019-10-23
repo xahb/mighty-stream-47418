@@ -36,10 +36,13 @@ class NeighborSampler(BaseEstimator):
         for distance, index in zip(distances, indices):
             result.append(np.random.choice(index, p=softmax(distance * self.temperature)))
         return self.y_[result]
-
+'''
 with open('dale_chatbot2.pickle', 'rb') as fh:
     dale_chatbot = pickle.load(fh)
-
+'''
+with open('memebase.pickle', 'rb') as mb:
+    memebase = pickle.load(mb)
+    
 token = os.environ['TOKEN']
 bot = telebot.TeleBot(token)
 server = Flask(__name__)
@@ -47,8 +50,7 @@ server = Flask(__name__)
 #DATABASE_URL = os.environ['DATABASE_URL']
 #conn = connect(DATABASE_URL, sslmode='require')
 #memebase = pd.read_csv('memebase.csv')
-with open('memebase.pickle', 'rb') as mb:
-    memebase = pickle.load(mb) 
+ 
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
@@ -66,7 +68,6 @@ def write_photo(message):
     #cur.execute("INSERT INTO memebase (num, data) VALUES (%s, %s)", ())
     new_row = {'message_id':message.message_id,'from_user':message.from_user,'date':message.date,'chat':message.chat,'id':memebase.shape[0]}
     memebase = memebase.append(pd.DataFrame(new_row,index=[memebase.shape[0]]))
-    #memebase.to_csv('memebase.csv',index=False)
     with open('memebase.pickle', 'wb') as mb:
         pickle.dump(memebase, mb)
 
@@ -80,8 +81,8 @@ def private_message(message):
         row = memebase[int(np.random(memebase.shape[0])),:]
         bot.forward_message(message.chat, row['chat'], row['message_id'])
     else:
-        #bot.reply_to(message, hzpool[int(round(random()*len(hzpool)))])
-        bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
+        bot.reply_to(message, hzpool[int(round(random()*len(hzpool)))])
+        #bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
 
 @bot.message_handler(func=lambda message: message.chat.type=='group', content_types=['text'])
 def group_message(message):
@@ -91,8 +92,8 @@ def group_message(message):
         elif re.search('[Аа]н[еи]к', message.text):
             scenarios.anek_scenario(message, bot)
         else:
-            #bot.reply_to(message, hzpool[round(random()*len(hzpool))])
-            bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
+            bot.reply_to(message, hzpool[round(random()*len(hzpool))])
+            #bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
 
          
 
