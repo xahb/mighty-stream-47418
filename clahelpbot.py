@@ -80,8 +80,10 @@ def private_message(message):
         bot.reply_to(message, hzpool[0])
 #    elif re.search('[Мм]ем', message.text):
     else:
-        row = memebase[int(np.random(memebase.shape[0])),:]
-        bot.forward_message(message.chat, row['chat'], row['message_id'])
+        try:
+            row = memebase.iloc[int(np.random.random()*len(memebase.index)),:]
+            bot.forward_message(message.chat, row['chat'], row['message_id'])
+        except: pass
 #    else:
 #        bot.reply_to(message, hzpool[int(round(random()*len(hzpool)))])
         #bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
