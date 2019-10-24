@@ -78,11 +78,12 @@ def private_message(message):
     elif re.search('[Аа]н[еи]к', message.text):
         #scenarios.anek_scenario(message, bot)
         bot.reply_to(message, hzpool[0])
-    elif re.search('[Мм]ем', message.text):
+#    elif re.search('[Мм]ем', message.text):
+    else:
         row = memebase[int(np.random(memebase.shape[0])),:]
         bot.forward_message(message.chat, row['chat'], row['message_id'])
-    else:
-        bot.reply_to(message, hzpool[int(round(random()*len(hzpool)))])
+#    else:
+#        bot.reply_to(message, hzpool[int(round(random()*len(hzpool)))])
         #bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
 
 @bot.message_handler(func=lambda message: message.chat.type=='group', content_types=['text'])
