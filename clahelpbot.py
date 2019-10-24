@@ -69,14 +69,15 @@ def write_photo(message,memebase=memebase):
     new_row = {'message_id':message.message_id,'from_user':message.from_user,'date':message.date,'chat':message.chat,'id':memebase.shape[0]}
     memebase = memebase.append(pd.DataFrame(new_row,index=[memebase.shape[0]]))
     with open('memebase.pickle', 'wb') as mb:
-        pickle.dump(memebase, mb)
+        pickle.dump(memebase, mb, protocol=2)
 
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['text'])
 def private_message(message):
     if re.search('[Кк]ин[оцч]|[Фф]ильм', message.text):
         scenarios.movie_scenario(message,bot)
     elif re.search('[Аа]н[еи]к', message.text):
-        scenarios.anek_scenario(message, bot)
+        #scenarios.anek_scenario(message, bot)
+        bot.reply_to(message, hzpool[0])
     elif re.search('[Мм]ем', message.text):
         row = memebase[int(np.random(memebase.shape[0])),:]
         bot.forward_message(message.chat, row['chat'], row['message_id'])
