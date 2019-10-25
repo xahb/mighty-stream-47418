@@ -75,7 +75,7 @@ def write_photo(message,memebase=memebase):
 def private_message(message):
     if re.search('[Кк]ин[оцч]|[Фф]ильм', message.text):
         scenarios.movie_scenario(message,bot)
-    elif re.search('[Aa]n[ei]k', message.text):
+    elif re.search(u'[Аа]н[еи]к', message.text.decode('ascii').encode('utf-8')):
         #scenarios.anek_scenario(message, bot)
         bot.reply_to(message, hzpool[0])
 #    elif re.search('[Мм]ем', message.text):
