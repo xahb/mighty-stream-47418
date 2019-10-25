@@ -83,7 +83,7 @@ def private_message(message):
         try:
             row = memebase.iloc[int(np.random.random()*len(memebase.index)),:]
             bot.forward_message(message.chat, row['chat'], row['message_id'])
-        except: pass
+        except: bot.reply_to(message, "дррр")
 #    else:
 #        bot.reply_to(message, hzpool[int(round(random()*len(hzpool)))])
         #bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
