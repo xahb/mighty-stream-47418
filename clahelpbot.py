@@ -67,10 +67,11 @@ def write_photo(message,memebase=memebase):
     #cur = conn.cursor()
     #cur.execute("INSERT INTO memebase (num, data) VALUES (%s, %s)", ())
     new_row = {'message_id':message.message_id,'from_user':message.from_user,'date':message.date,'chat':message.chat,'id':memebase.shape[0]}
-#    memebase = memebase.append(pd.DataFrame(new_row,index=[memebase.shape[0]]))
+    memebase = memebase.append(pd.DataFrame(new_row,index=[memebase.shape[0]]))
 #    with open('memebase.pickle', 'wb') as mb:
 #        pickle.dump(memebase, mb)
-    bot.reply_to(message, 'Сохранил'+str(new_row['message_id']))
+#    bot.reply_to(message, 'Сохранил'+str(new_row['message_id']))
+    bot.reply_to(message, 'Сохранил'+str(memebase['message_id'][0]))
 
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['text'])
 def private_message(message):
