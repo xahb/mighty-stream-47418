@@ -83,8 +83,9 @@ def private_message(message):
 #    elif re.search('[Мм]ем', message.text):
     else:
 #        try:
-        row = memebase.iloc[int(np.random.random()*len(memebase.index)),:].copy()
-        bot.forward_message(message.chat, row['chat'], row['message_id'])
+        bot.reply_to(message, str(len(memebase.index)))
+        #row = memebase.iloc[int(np.random.random()*len(memebase.index)),:].copy()
+        #bot.forward_message(message.chat, row['chat'], row['message_id'])
 #        except: bot.reply_to(message, "дррр")
 #    else:
 #        bot.reply_to(message, hzpool[int(round(random()*len(hzpool)))])
