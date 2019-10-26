@@ -68,8 +68,8 @@ def write_photo(message,memebase=memebase):
     #cur.execute("INSERT INTO memebase (num, data) VALUES (%s, %s)", ())
     new_row = {'message_id':message.message_id,'from_user':message.from_user,'date':message.date,'chat':message.chat,'id':memebase.shape[0]}
     memebase = memebase.append(pd.DataFrame(new_row,index=[memebase.shape[0]]))
-#    with open('memebase.pickle', 'wb') as mb:
-#        pickle.dump(memebase, mb)
+    with open('memebase.pickle', 'wb') as mb:
+        pickle.dump(memebase, mb)
 #    bot.reply_to(message, 'Сохранил'+str(new_row['message_id']))
     bot.reply_to(message, 'Сохранил'+str(memebase['message_id'][0]))
 
@@ -83,7 +83,7 @@ def private_message(message):
 #    elif re.search('[Мм]ем', message.text):
     else:
         try:
-            row = memebase.iloc[int(np.random.random()*len(memebase.index)),:]
+            row = memebase.iloc[int(np.random.random()*len(memebase.index)),:].copy()
             bot.forward_message(message.chat, row['chat'], row['message_id'])
         except: bot.reply_to(message, "дррр")
 #    else:
