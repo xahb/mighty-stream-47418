@@ -84,10 +84,11 @@ def private_message(message):
 #    elif re.search('[Мм]ем', message.text):
     else:
 #        try:
-        size = cur.execute('select count(*) from public.memebase;')
+        cur.execute('select count(*) from public.memebase;')
+        size = cur.fetchone()
         rownum = int(np.random.random()*size)
-        chat_id = cur.execute('select chat_id from public.memebase where ROW_NUMBER() over() = %s;', (rownum))
-        message_id = cur.execute('select message_id from public.memebase where ROW_NUMBER() over() = %s;', (rownum))
+        cur.execute('select chat_id, message_id from public.memebase where ROW_NUMBER() over() = %s;', (rownum))
+        chat_id, message_id = cur.fetchone()
         bot.forward_message(message.chat, chat_id, message_id)
         #bot.reply_to(message, str(len(memebase.index)))
         #row = memebase.iloc[int(np.random.random()*len(memebase.index)),:].copy()
