@@ -66,6 +66,7 @@ def help_command(message):
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['photo','document'])
 def write_photo(message):
     cur.execute("INSERT INTO public.memebase (message_id, from_user_id, from_user_first_name, date, chat_id) VALUES (%s, %s, %s, %s, %s);", (message.message_id, message.from_user.id, message.from_user.first_name, str(message.date), message.chat.id))
+    conn.commit()
     #new_row = {'message_id':message.message_id,'from_user':message.from_user,'date':message.date,'chat':message.chat,'id':memebase.shape[0]}
     #memebase = memebase.append(pd.DataFrame(new_row,index=[memebase.shape[0]]))
     #with open('memebase.pickle', 'wb') as mb:
