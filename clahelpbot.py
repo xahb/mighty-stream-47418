@@ -3,8 +3,8 @@
 import os
 import re
 from random import random
-import pickle
-import pandas as pd
+#import pickle
+#import pandas as pd
 
 import telebot
 from flask import Flask, request
@@ -12,7 +12,7 @@ import numpy as np
 #from sklearn.neighbors import BallTree
 #from sklearn.base import BaseEstimator
 #import numpy as np
-#from psycopg2 import connect
+from psycopg2 import connect
 
 from answers import hzpool
 import scenarios
@@ -40,15 +40,16 @@ class NeighborSampler(BaseEstimator):
 with open('dale_chatbot2.pickle', 'rb') as fh:
     dale_chatbot = pickle.load(fh)
 '''
-with open('memebase.pickle', 'rb') as mb:
-    memebase = pickle.load(mb)
+#with open('memebase.pickle', 'rb') as mb:
+ #   memebase = pickle.load(mb)
     
 token = os.environ['TOKEN']
 bot = telebot.TeleBot(token)
 server = Flask(__name__)
 
-#DATABASE_URL = os.environ['DATABASE_URL']
-#conn = connect(DATABASE_URL, sslmode='require')
+DATABASE_URL = os.environ['DATABASE_URL']
+conn = connect(DATABASE_URL, sslmode='require')
+cur = conn.cursor()
 #memebase = pd.read_csv('memebase.csv')
  
 
@@ -63,15 +64,14 @@ def help_command(message):
     bot.reply_to(message, '''Можешб обращаться "бот" или "пёс"''')
     
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['photo','document'])
-def write_photo(message,memebase=memebase):
-    #cur = conn.cursor()
-    #cur.execute("INSERT INTO memebase (num, data) VALUES (%s, %s)", ())
-    new_row = {'message_id':message.message_id,'from_user':message.from_user,'date':message.date,'chat':message.chat,'id':memebase.shape[0]}
-    memebase = memebase.append(pd.DataFrame(new_row,index=[memebase.shape[0]]))
-    with open('memebase.pickle', 'wb') as mb:
-        pickle.dump(memebase, mb)
+def write_photo(message):
+    cur.execute("INSERT INTO public.memebase (message_id, from_user, date, chat) VALUES (%s, %s, %s, %s);", (message.message_id, message.from_user, str(message.date), message.chat))
+    #new_row = {'message_id':message.message_id,'from_user':message.from_user,'date':message.date,'chat':message.chat,'id':memebase.shape[0]}
+    #memebase = memebase.append(pd.DataFrame(new_row,index=[memebase.shape[0]]))
+    #with open('memebase.pickle', 'wb') as mb:
+    #    pickle.dump(memebase, mb)
 #    bot.reply_to(message, 'Сохранил'+str(new_row['message_id']))
-    bot.reply_to(message, 'Сохранил'+str(memebase['message_id'][0]))
+    bot.reply_to(message, 'Сохранил'+str(message.message_id))
 
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['text'])
 def private_message(message):
@@ -83,7 +83,12 @@ def private_message(message):
 #    elif re.search('[Мм]ем', message.text):
     else:
 #        try:
-        bot.reply_to(message, str(len(memebase.index)))
+        size = cur.execute('select count(*) from public.memebase;')
+        rownum = int(np.random.random()*size)
+        chat = cur.execute('select chat from public.memebase where ROW_NUMBER() over() = %s;', (rownum))
+        message_id = cur.execute('select message_id from public.memebase where ROW_NUMBER() over() = %s;', (rownum))
+        bot.forward_message(message.chat, chat, message_id)
+        #bot.reply_to(message, str(len(memebase.index)))
         #row = memebase.iloc[int(np.random.random()*len(memebase.index)),:].copy()
         #bot.forward_message(message.chat, row['chat'], row['message_id'])
 #        except: bot.reply_to(message, "дррр")
