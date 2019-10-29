@@ -85,7 +85,7 @@ def private_message(message):
     else:
 #        try:
         cur.execute('select count(*) from public.memebase;')
-        size = cur.fetchone()
+        size = cur.fetchone()[0]
         rownum = int(np.random.random()*size)
         cur.execute('select chat_id, message_id from public.memebase where ROW_NUMBER() over() = %s;', (rownum))
         chat_id, message_id = cur.fetchone()
