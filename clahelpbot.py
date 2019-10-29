@@ -87,7 +87,7 @@ def private_message(message):
         cur.execute('select count(*) from public.memebase;')
         size = cur.fetchone()[0]
         rownum = int(np.random.random()*size)
-        cur.execute('select chat_id, message_id from public.memebase where ROW_NUMBER() over() = %s;', (rownum))
+        cur.execute('select chat_id, message_id from public.memebase where ROW_NUMBER() over() = %s;', rownum)
         chat_id, message_id = cur.fetchone()
         bot.forward_message(message.chat, chat_id, message_id)
         #bot.reply_to(message, str(len(memebase.index)))
