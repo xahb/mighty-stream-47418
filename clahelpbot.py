@@ -89,7 +89,7 @@ def private_message(message):
 #        rownum = int(np.random.random()*size)
         cur.execute('select chat_id, message_id from public.memebase order by message_id desc limit 1')
         chat_id, message_id = cur.fetchone()
-        bot.forward_message(message.chat, chat_id, message_id)
+        bot.forward_message(message.chat.id, chat_id, message_id)
         #bot.reply_to(message, str(len(memebase.index)))
         #row = memebase.iloc[int(np.random.random()*len(memebase.index)),:].copy()
         #bot.forward_message(message.chat, row['chat'], row['message_id'])
