@@ -40,8 +40,6 @@ class NeighborSampler(BaseEstimator):
 with open('dale_chatbot2.pickle', 'rb') as fh:
     dale_chatbot = pickle.load(fh)
 '''
-#with open('memebase.pickle', 'rb') as mb:
- #   memebase = pickle.load(mb)
     
 token = os.environ['TOKEN']
 bot = telebot.TeleBot(token)
@@ -50,14 +48,12 @@ server = Flask(__name__)
 DATABASE_URL = os.environ['DATABASE_URL']
 conn = connect(DATABASE_URL, sslmode='require')
 cur = conn.cursor()
-#memebase = pd.read_csv('memebase.csv')
  
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
     bot.reply_to(message, message.from_user.first_name.decode('utf-8').encode('utf-8', 'replace'))
     #bot.reply_to(message, 'Привет, ' + message.from_user.first_name.decode('utf-8').encode('utf-8', 'replace') + '!')
-    #bot.reply_to(message, 'Привет!' + ' вжжжж')
 
 @bot.message_handler(commands=['help'])
 def help_command(message):
@@ -67,11 +63,6 @@ def help_command(message):
 def write_photo(message):
     cur.execute("INSERT INTO public.memebase (message_id, from_user_id, from_user_first_name, date, chat_id) VALUES (%s, %s, %s, %s, %s);", (message.message_id, message.from_user.id, message.from_user.first_name, str(message.date), message.chat.id))
     conn.commit()
-    #new_row = {'message_id':message.message_id,'from_user':message.from_user,'date':message.date,'chat':message.chat,'id':memebase.shape[0]}
-    #memebase = memebase.append(pd.DataFrame(new_row,index=[memebase.shape[0]]))
-    #with open('memebase.pickle', 'wb') as mb:
-    #    pickle.dump(memebase, mb)
-#    bot.reply_to(message, 'Сохранил'+str(new_row['message_id']))
     bot.reply_to(message, 'Сохранил '+str(message.message_id)+' от '+str(message.from_user.first_name))
 
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['text'])
@@ -79,24 +70,14 @@ def private_message(message):
     if re.search('[Кк]ин[оцч]|[Фф]ильм', message.text):
         scenarios.movie_scenario(message,bot)
     elif re.search('[Аа]н[еи]к', message.text):
-        #scenarios.anek_scenario(message, bot)
-        bot.reply_to(message, hzpool[0])
-#    elif re.search('[Мм]ем', message.text):
-    else:
-#        try:
-#        cur.execute('select count(*) from public.memebase;')
- #       size = cur.fetchone()[0]
-#        rownum = int(np.random.random()*size)
+        scenarios.anek_scenario(message, bot)
+        #bot.reply_to(message, hzpool[0])
+    elif re.search('[Мм]ем', message.text):
+#    else:
         cur.execute('select chat_id, message_id from public.memebase order by random() limit 1')
         chat_id, message_id = cur.fetchone()
         bot.forward_message(message.chat.id, chat_id, message_id)
-        #bot.reply_to(message, str(len(memebase.index)))
-        #row = memebase.iloc[int(np.random.random()*len(memebase.index)),:].copy()
-        #bot.forward_message(message.chat, row['chat'], row['message_id'])
-#        except: bot.reply_to(message, "дррр")
-#    else:
-#        bot.reply_to(message, hzpool[int(round(random()*len(hzpool)))])
-        #bot.reply_to(message, dale_chatbot.predict([message.text.lower()])[0])
+
 
 @bot.message_handler(func=lambda message: message.chat.type=='group', content_types=['text'])
 def group_message(message):
