@@ -30,10 +30,10 @@ Base = declarative_base()
 class SqlMessage(Base):
     __tablename__ = 'messages'
     id = Column(BigInteger, primary_key=True)
-    message_id = Column(Integer)
-    from_user_id = Column(String)
+    message_id = Column(BigInteger)
+    from_user_id = Column(BigInteger)
     #date = Column(DateTime)
-    chat_id = Column(Integer)
+    chat_id = Column(BigInteger)
 
     def __init__(self, message):
         self.message_id = message.message_id
