@@ -23,13 +23,13 @@ cur = conn.cursor()
 from sqlalchemy import create_engine
 engine = create_engine(DATABASE_URL)
 
-from sqlalchemy import Column, Integer, String#, DateTime
+from sqlalchemy import Column, Integer, String, BigInteger#, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 class SqlMessage(Base):
     __tablename__ = 'messages'
-    id = Column(Integer, primary_key=True)
+    id = Column(BigInteger, primary_key=True)
     message_id = Column(Integer)
     from_user_id = Column(String)
     #date = Column(DateTime)
