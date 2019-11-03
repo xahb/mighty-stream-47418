@@ -3,44 +3,15 @@
 import os
 import re
 from random import random
-#import pickle
-#import pandas as pd
 
 import telebot
 from flask import Flask, request
-import numpy as np
-#from sklearn.neighbors import BallTree
-#from sklearn.base import BaseEstimator
-#import numpy as np
 from psycopg2 import connect
 
 from answers import hzpool
 import scenarios
-
-
-'''
-def softmax(x):
-    proba=np.exp(-x)
-    return proba / sum(proba)
-
-class NeighborSampler(BaseEstimator):
-    def __init__(self, k=5, temperature=1.0):
-        self.k=k
-        self.temperature=temperature
-    def fit(self, X, y):
-        self.tree_ = BallTree(X)
-        self.y_ = np.array(y)
-    def predict(self, X, random_state=None):
-        distances, indices = self.tree_.query(X, return_distance=True, k=self.k)
-        result = []
-        for distance, index in zip(distances, indices):
-            result.append(np.random.choice(index, p=softmax(distance * self.temperature)))
-        return self.y_[result]
-
-with open('dale_chatbot2.pickle', 'rb') as fh:
-    dale_chatbot = pickle.load(fh)
-'''
-    
+#import sql_queries
+   
 token = os.environ['TOKEN']
 bot = telebot.TeleBot(token)
 server = Flask(__name__)
@@ -48,7 +19,35 @@ server = Flask(__name__)
 DATABASE_URL = os.environ['DATABASE_URL']
 conn = connect(DATABASE_URL, sslmode='require')
 cur = conn.cursor()
- 
+
+from sqlalchemy import create_engine
+engine = create_engine(DATABASE_URL)
+
+from sqlalchemy import Column, Integer, String#, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+Base = declarative_base()
+
+class SqlMessage(Base):
+    __tablename__ = 'messages'
+    id = Column(Integer, primary_key=True)
+    message_id = Column(Integer)
+    from_user_id = Column(String)
+    #date = Column(DateTime)
+    chat_id = Column(Integer)
+
+    def __init__(self, message):
+        self.message_id = message.id
+        self.from_user_id = message.from_user.id
+        #self.date = Column(DateTime)
+        self.chat_id = message.chat.id
+        self.id = int(str(self.chat_id)+str(self.message_id))
+
+# Создание таблицы
+Base.metadata.create_all(engine) 
+
+from sqlalchemy.orm import sessionmaker
+Session = sessionmaker(bind=engine)
+
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
@@ -61,8 +60,15 @@ def help_command(message):
     
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['photo','document'])
 def write_photo(message):
-    cur.execute("INSERT INTO public.memebase (message_id, from_user_id, from_user_first_name, date, chat_id) VALUES (%s, %s, %s, %s, %s);", (message.message_id, message.from_user.id, message.from_user.first_name, str(message.date), message.chat.id))
+    '''
+    cur.execute(sql_queries.write_photo, 
+                (message.message_id, message.from_user.id, message.from_user.first_name, str(message.date), message.chat.id))
     conn.commit()
+    '''
+    session = Session()
+    sql_message = SqlMessage(message)
+    session.add(sql_message)
+    session.commit()
     bot.reply_to(message, 'Сохранил '+str(message.message_id)+' от '+str(message.from_user.first_name))
 
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['text'])
@@ -77,6 +83,7 @@ def private_message(message):
         cur.execute('select chat_id, message_id from public.memebase order by random() limit 1')
         chat_id, message_id = cur.fetchone()
         bot.forward_message(message.chat.id, chat_id, message_id)
+#        bot.send_poll(message.chat.id, 'Чё как?', [':joy_cat:',':shrug:',':facepalm:'])
 
 
 @bot.message_handler(func=lambda message: message.chat.type=='group', content_types=['text'])
