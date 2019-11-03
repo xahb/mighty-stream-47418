@@ -36,7 +36,7 @@ class SqlMessage(Base):
     chat_id = Column(Integer)
 
     def __init__(self, message):
-        self.message_id = message.id
+        self.message_id = message.message_id
         self.from_user_id = message.from_user.id
         #self.date = Column(DateTime)
         self.chat_id = message.chat.id
