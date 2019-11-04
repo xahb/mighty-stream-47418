@@ -80,9 +80,11 @@ def private_message(message):
         #bot.reply_to(message, hzpool[0])
     elif re.search('[Мм]ем', message.text):
 #    else:
-        cur.execute('select chat_id, message_id from public.memebase order by random() limit 1')
-        chat_id, message_id = cur.fetchone()
-        bot.forward_message(message.chat.id, chat_id, message_id)
+        #cur.execute('select chat_id, message_id from public.memebase order by random() limit 1')
+        #chat_id, message_id = cur.fetchone()
+        session = Session()
+        response = session.query(SqlMessage).order_by(random()).first()
+        bot.forward_message(message.chat.id, response.chat_id, response.message_id)
 #        bot.send_poll(message.chat.id, 'Чё как?', [':joy_cat:',':shrug:',':facepalm:'])
 
 
