@@ -78,7 +78,7 @@ class SqlUser(Base):
     first_name = Column(String)
     last_name = Column(String)
     username = Column(String)
-    messages_count = Column(String)
+    messages_count = Column(Integer)
     
     def __init__(self, message):
         self.id = message.from_user.id
@@ -97,7 +97,7 @@ class SqlChat(Base):
     first_name = Column(String)
     last_name = Column(String)
     all_members_are_administrators = Column(Boolean)
-    messages_count = Column(String)
+    messages_count = Column(Integer)
     
     def __init__(self, message):
         self.id = message.chat.id
