@@ -7,6 +7,8 @@ Created on Sat Nov  2 20:59:10 2019
 
 from sqlalchemy import Column, BigInteger, Boolean, DateTime, Integer, String 
 from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
+
 Base = declarative_base()
 
 class SqlMessage(Base):
@@ -38,7 +40,7 @@ class SqlMessage(Base):
     def __init__(self, message):
         self.id = int(str(message.chat.id)+str(message.message_id))
         self.message_id = message.message_id
-        self.date = message.date
+        self.date = datetime.fromtimestamp(message.date)
         self.chat_id = message.chat.id
         try:
             self.from_user_id = message.from_user.id
@@ -48,7 +50,7 @@ class SqlMessage(Base):
             self.forward_from_id = message.forward_from.id
         except:
             self.forward_from_id = 0
-        self.forward_date = message.forward_date
+        self.forward_date = datetime.fromtimestamp(message.forward_date)
         self.TMP_reply_to_message = str(message.reply_to_message)
         self.text = message.text
         self.TMP_entities = str(message.entities)
