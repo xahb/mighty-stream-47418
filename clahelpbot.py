@@ -23,6 +23,9 @@ cur = conn.cursor()
 from sqlalchemy import create_engine
 engine = create_engine(DATABASE_URL)
 
+from sqlalchemy import func
+from sql_queries import SqlMessage, Base
+'''
 from sqlalchemy import Column, Integer, String, BigInteger#, DateTime
 from sqlalchemy import func
 from sqlalchemy.ext.declarative import declarative_base
@@ -42,7 +45,7 @@ class SqlMessage(Base):
         #self.date = Column(DateTime)
         self.chat_id = message.chat.id
         self.id = int(str(self.chat_id)+str(self.message_id))
-
+'''
 # Создание таблицы
 Base.metadata.create_all(engine) 
 
