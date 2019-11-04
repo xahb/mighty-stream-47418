@@ -24,6 +24,7 @@ from sqlalchemy import create_engine
 engine = create_engine(DATABASE_URL)
 
 from sqlalchemy import Column, Integer, String, BigInteger#, DateTime
+from sqlalchemy import func
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
