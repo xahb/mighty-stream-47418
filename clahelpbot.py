@@ -73,15 +73,14 @@ def write_photo(message):
     except:
         sql_chat = SqlChat(message)
         session.add(sql_chat)
-    finally:
-        pass
-    
+    '''
     try:
         sql_user = session.query(SqlUser).filter_by(id=message.from_user.id)
         sql_user.messages_count += 1
     except:
         sql_user = SqlUser(message)
         session.add(sql_user)
+    '''
     session.commit()
     bot.reply_to(message, 'Сохранил '+str(message.message_id)+' от '+str(message.from_user.first_name))
 
