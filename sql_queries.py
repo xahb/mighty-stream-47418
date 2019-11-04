@@ -101,10 +101,10 @@ class SqlChat(Base):
         self.id = message.chat.id
         self.type = str(message.chat.type)
         self.title = message.chat.title
-        self.username = message.from_user.username
-        self.first_name = message.from_user.first_name
-        self.last_name = message.from_user.last_name
-        self.all_members_are_administrators = message.all_members_are_administrators
+        self.username = message.chat.username
+        self.first_name = message.chat.first_name
+        self.last_name = message.chat.last_name
+        self.all_members_are_administrators = message.chat.all_members_are_administrators
         self.messages_count = 1
 
 
