@@ -24,7 +24,7 @@ from sqlalchemy import create_engine
 engine = create_engine(DATABASE_URL)
 
 from sqlalchemy import func
-from sql_queries import SqlMessage, Base
+from sql_queries import SqlMessage, SqlUser, SqlChat, Base
 '''
 from sqlalchemy import Column, Integer, String, BigInteger#, DateTime
 from sqlalchemy import func
@@ -64,14 +64,21 @@ def help_command(message):
     
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['photo','document'])
 def write_photo(message):
-    '''
-    cur.execute(sql_queries.write_photo, 
-                (message.message_id, message.from_user.id, message.from_user.first_name, str(message.date), message.chat.id))
-    conn.commit()
-    '''
     session = Session()
     sql_message = SqlMessage(message)
     session.add(sql_message)
+    try:
+        sql_user = session.query(SqlUser).filter_by(id=message.from_user.id)
+        sql_user.messages_count += 1
+    except:
+        sql_user = SqlUser(message)
+        session.add(sql_user)
+    try:
+        sql_chat = session.query(SqlChat).filter_by(id=message.chat.id)
+        sql_chat.messages_count += 1
+    except:
+        sql_chat = SqlChat(message)
+        session.add(sql_chat)
     session.commit()
     bot.reply_to(message, 'Сохранил '+str(message.message_id)+' от '+str(message.from_user.first_name))
 
