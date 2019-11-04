@@ -67,13 +67,16 @@ def write_photo(message):
     session = Session()
     sql_message = SqlMessage(message)
     session.add(sql_message)
+    sql_chat = session.query(SqlChat).filter_by(id=message.chat.id)
+    sql_chat.messages_count += 1
+    '''
     try:
         sql_chat = session.query(SqlChat).filter_by(id=message.chat.id)
         sql_chat.messages_count += 1
     except:
         sql_chat = SqlChat(message)
         session.add(sql_chat)
-    '''
+    
     try:
         sql_user = session.query(SqlUser).filter_by(id=message.from_user.id)
         sql_user.messages_count += 1
