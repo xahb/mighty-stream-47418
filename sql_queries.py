@@ -38,10 +38,16 @@ class SqlMessage(Base):
     def __init__(self, message):
         self.id = int(str(message.chat.id)+str(message.message_id))
         self.message_id = message.message_id
-        self.from_user_id = message.from_user.id
         self.date = message.date
         self.chat_id = message.chat.id
-        self.forward_from_id = message.forward_from.id
+        try:
+            self.from_user_id = message.from_user.id
+        except:
+            self.from_user_id = 0
+        try:
+            self.forward_from_id = message.forward_from.id
+        except:
+            self.forward_from_id = 0
         self.forward_date = message.forward_date
         self.TMP_reply_to_message = str(message.reply_to_message)
         self.text = message.text
