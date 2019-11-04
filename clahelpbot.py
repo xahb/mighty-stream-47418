@@ -83,7 +83,7 @@ def private_message(message):
         #cur.execute('select chat_id, message_id from public.memebase order by random() limit 1')
         #chat_id, message_id = cur.fetchone()
         session = Session()
-        response = session.query(SqlMessage).order_by(random()).first()
+        response = session.query(SqlMessage).order_by(func.random()).first()
         bot.forward_message(message.chat.id, response.chat_id, response.message_id)
 #        bot.send_poll(message.chat.id, 'Чё как?', [':joy_cat:',':shrug:',':facepalm:'])
 
