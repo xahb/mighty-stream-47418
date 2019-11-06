@@ -74,7 +74,8 @@ def private_message(message):
         sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
         if (sql_chat.state_0 > 0 and re.search(':.+:', demojize(message.text))):
             sql_reaction = SqlReaction(message, sql_chat.state_0)
-            session.add(sql_reaction)            
+            session.add(sql_reaction)
+            sql_chat.state_0 = 0
     except:
         pass       
     if re.search('[Кк]ин[оцч]|[Фф]ильм', message.text):
@@ -85,6 +86,14 @@ def private_message(message):
         session = Session()
         response = session.query(SqlMessage).order_by(func.random()).first()
         bot.forward_message(message.chat.id, response.chat_id, response.message_id)
+        try:
+            sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
+        except:
+            sql_chat = SqlChat(message)
+            sql_chat.messages_count = 0
+            session.add(sql_chat)
+        sql_chat.state_0 = response.id
+    session.commit()
 
 
 @bot.message_handler(func=lambda message: message.chat.type=='group', content_types=['text'])
