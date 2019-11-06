@@ -5,9 +5,10 @@ Created on Sat Nov  2 20:59:10 2019
 @author: Lenovo
 """
 
-from sqlalchemy import Column, BigInteger, Boolean, DateTime, Integer, String 
+from sqlalchemy import Column, BigInteger, DateTime, Integer, String 
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
+from emoji import demojize
 
 Base = declarative_base()
 
@@ -15,7 +16,7 @@ class SqlMessage(Base):
     __tablename__ = 'messages'
     id = Column(BigInteger, primary_key=True)
     message_id = Column(Integer)
-    from_user_id = Column(String)
+    from_user_id = Column(Integer)
     date = Column(DateTime)
     chat_id = Column(Integer)
     forward_from_id = Column(Integer)
@@ -98,6 +99,7 @@ class SqlChat(Base):
     last_name = Column(String)
     all_members_are_administrators = Column(String)
     messages_count = Column(Integer)
+    state_0 = Column(BigInteger)    #id of message that bot posted in chat (to collect reactions)
     
     def __init__(self, message):
         self.id = message.chat.id
@@ -108,8 +110,28 @@ class SqlChat(Base):
         self.last_name = message.chat.last_name
         self.all_members_are_administrators = str(message.chat.all_members_are_administrators)
         self.messages_count = 1
+        self.state_0 = 0
 
 
+class SqlReaction(Base):
+    __tablename__ = 'reactions'
+    id = Column(BigInteger, primary_key=True)
+    origin_message_id = Column(BigInteger)
+    from_user_id = Column(Integer)
+    chat_id = Column(Integer)
+    date = Column(DateTime)
+    emoji = Column(String)
+    
+    def __init__(self, message, state_0):
+        self.id = int(str(message.chat.id)+str(message.message_id))
+        self.origin_message_id = state_0
+        try:
+            self.from_user_id = message.from_user.id
+        except:
+            self.from_user_id = 0
+        self.chat_id = message.chat.id
+        self.date = datetime.fromtimestamp(message.date)
+        self.emoji = demojize(message.text)
 
 
 
