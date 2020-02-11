@@ -86,7 +86,7 @@ def private_message(message):
     elif re.search('[Мм]ем', message.text):
         session = Session()
         response = session.query(SqlMessage).order_by(func.random()).first()
-        bot.forward_message(message.chat.id, response.chat_id, response.message_id)
+        #bot.forward_message(message.chat.id, response.chat_id, response.message_id)
         keyboard = telebot.types.InlineKeyboardMarkup()
         for i in range(3):
             emoji = random.choice(list(EMOJI_UNICODE))
