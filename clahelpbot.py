@@ -7,6 +7,7 @@ from emoji import emojize, demojize
 from emoji.unicode_codes import EMOJI_UNICODE
 
 import telebot
+from telebot import apihelper
 from flask import Flask, request
 from psycopg2 import connect
 
