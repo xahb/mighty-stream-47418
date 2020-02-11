@@ -4,6 +4,7 @@ import os
 import re
 from random import random
 from emoji import emojize, demojize
+from emoji.unicode_codes import EMOJI_UNICODE
 
 import telebot
 from flask import Flask, request
@@ -86,6 +87,11 @@ def private_message(message):
         session = Session()
         response = session.query(SqlMessage).order_by(func.random()).first()
         bot.forward_message(message.chat.id, response.chat_id, response.message_id)
+        keyboard = telebot.types.InlineKeyboardMarkup()
+        for i in range(3):
+            emoji = random.choice(list(EMOJI_UNICODE))
+            keyboard.add(telebot.types.InlineKeyboardButton(text=emojize(emoji), callback_data=emoji))
+        bot.send_message(message.chat.id, '?', reply_markup=keyboard)
         try:
             sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
         except:
