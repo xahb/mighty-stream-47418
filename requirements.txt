@@ -19,5 +19,5 @@ SQLAlchemy==1.1.9
 #pytelegrambotapi==3.2.1
 pytelegrambotapi==3.6.2
 Werkzeug==0.12.2
-yaml
+yaml==0.1.7
 
