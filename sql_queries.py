@@ -134,6 +134,28 @@ class SqlReaction(Base):
         self.emoji = demojize(message.text)
 
 
+class SqlKeyReaction(Base):
+    __tablename__ = 'key_reactions'
+    id = Column(BigInteger, primary_key=True)
+    meme_message_id = Column(BigInteger)
+    user_id = Column(Integer)
+    chat_id = Column(Integer)
+    date = Column(DateTime)
+    emoji_challengers = Column(String)
+    emoji_winner = Column(String)
+    
+    def __init__(self, message, challengers, winner):
+        self.id = int(str(message.chat.id)+str(message.message_id))
+        self.origin_message_id = message.message_id
+        try:
+            self.from_user_id = message.from_user.id
+        except:
+            self.from_user_id = 0
+        self.chat_id = message.chat.id
+        self.date = datetime.fromtimestamp(message.date)
+        self.emoji_challengers = challengers
+        self.emoji_winner = winner
+
 
 
 insert_memes='''INSERT INTO public.memes (message_id, from_user_id, date, chat_id, forward_from_id, forward_date, reply_to_message_id, ) 

@@ -5,6 +5,7 @@ import re
 from random import random, choice as random_choice
 from emoji import emojize, demojize
 from emoji.unicode_codes import EMOJI_UNICODE
+import yaml
 
 import telebot
 from telebot import apihelper
@@ -89,9 +90,10 @@ def private_message(message):
         response = session.query(SqlMessage).order_by(func.random()).first()
         bot.forward_message(message.chat.id, response.chat_id, response.message_id)
         keyboard = telebot.types.InlineKeyboardMarkup()
-        for i in range(3):
-            emoji = random_choice(list(EMOJI_UNICODE))
-            keyboard.add(telebot.types.InlineKeyboardButton(text=emojize(emoji), callback_data=emoji))
+        keyboard.row_width = 3
+        emoji_challengers = [random_choice(list(EMOJI_UNICODE)) for i in range(9)]
+        for emoji in emoji_challengers:
+            keyboard.add(telebot.types.InlineKeyboardButton(text=emojize(emoji), callback_data=str([emoji,emoji_challengers,response])))
         bot.send_message(message.chat.id, 'Этот мем как:', reply_markup=keyboard)
         try:
             sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
@@ -102,6 +104,13 @@ def private_message(message):
         sql_chat.state_0 = response.id
     session.commit()
 
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    session = Session()
+    cb_data = yaml.load(callback.data)
+    sql_key_response = SqlKeyResponse(cb_data[2], cb_data[1], cb_data[0])
+    session.add(sql_key_response)
+    session.commit()
 
 @bot.message_handler(func=lambda message: message.chat.type=='group', content_types=['text'])
 def group_message(message):
