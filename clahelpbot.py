@@ -5,7 +5,7 @@ import re
 from random import random, choice as random_choice
 from emoji import emojize, demojize
 from emoji.unicode_codes import EMOJI_UNICODE
-import pickle
+import json
 
 import telebot
 from telebot import apihelper
@@ -97,8 +97,8 @@ def private_message(message):
         for emoji in emoji_challengers:
             reaction_args_full = reaction_args.copy()
             reaction_args_full.append(emoji)
-            reaction_buttons.append(telebot.types.InlineKeyboardButton(text=emojize(emoji), callback_data=pickle.dumps(reaction_args_full)))
-        keyboard.add(tuple(reaction_buttons))
+            reaction_buttons.append(telebot.types.InlineKeyboardButton(text=emojize(emoji), callback_data=json.dumps(reaction_args_full)))
+        keyboard.add(reaction_buttons)
         bot.send_message(message.chat.id, 'Этот мем как:', reply_markup=keyboard)
         try:
             sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
@@ -112,7 +112,7 @@ def private_message(message):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
     session = Session()
-    cb_data = pickle.loads(call.data)
+    cb_data = json.loads(call.data)
     sql_key_reaction = SqlKeyReaction(cb_data[0], cb_data[1], cb_data[2], cb_data[3])
     session.add(sql_key_reaction)
     session.commit()
