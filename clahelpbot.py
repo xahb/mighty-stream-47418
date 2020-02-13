@@ -96,7 +96,8 @@ def private_message(message):
         reaction_buttons = []
         reaction_args_full = reaction_args.copy()
         reaction_args_full.append(emoji_challengers[0])
-        keyboard.add(telebot.types.InlineKeyboardButton(text=emojize(emoji_challengers[0]), callback_data=json.dumps(reaction_args_full)))
+        keyboard.add(telebot.types.InlineKeyboardButton(text=emojize(emoji_challengers[0]), 
+        callback_data='vv'))#json.dumps(reaction_args_full)))
         '''
         for emoji in emoji_challengers:
             reaction_args_full = reaction_args.copy()
