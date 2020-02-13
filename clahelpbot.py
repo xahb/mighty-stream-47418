@@ -91,7 +91,7 @@ def private_message(message):
         bot.forward_message(message.chat.id, response.chat_id, response.message_id)
         keyboard = telebot.types.InlineKeyboardMarkup()
         keyboard.row_width = 5
-        emoji_challengers = [random_choice(list(EMOJI_UNICODE)) for i in range(20)]
+        emoji_challengers = [random_choice(list(EMOJI_UNICODE)) for i in range(5)]
         reaction_args = [response.id, message.chat_id, str(emoji_challengers)]
         for emoji in emoji_challengers:
             keyboard.add(telebot.types.InlineKeyboardButton(text=emojize(emoji), callback_data=pickle.dumps(reaction_args.append(emoji))))
