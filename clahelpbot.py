@@ -90,9 +90,9 @@ def private_message(message):
         response = session.query(SqlMessage).order_by(func.random()).first()
         bot.forward_message(message.chat.id, response.chat_id, response.message_id)
         keyboard = telebot.types.InlineKeyboardMarkup()
-        #keyboard.row_width = 5
+        keyboard.row_width = 5
         emoji_challengers = [random_choice(list(EMOJI_UNICODE)) for i in range(5)]
-        reaction_args = [response.id, message.chat_id, str(emoji_challengers)]
+        #reaction_args = [response.id, message.chat_id, str(emoji_challengers)]
         for emoji in emoji_challengers:
             keyboard.add(telebot.types.InlineKeyboardButton(text=emojize(emoji), callback_data='b'))#, callback_data=pickle.dumps(reaction_args.append(emoji))))
         bot.send_message(message.chat.id, 'Этот мем как:', reply_markup=keyboard)
