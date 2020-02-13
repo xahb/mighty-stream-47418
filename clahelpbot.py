@@ -98,9 +98,10 @@ def private_message(message):
             reaction_args_full = reaction_args.copy()
             reaction_args_full.append(emoji)
             reaction_buttons.append(telebot.types.InlineKeyboardButton(text=emojize(emoji), 
-            callback_data=json.dumps(reaction_args_full)))
+            callback_data='vv'))#json.dumps(reaction_args_full)))
         #в след строке дичь, потому что метод add не принимает list или tuple, а каждую кнопку считает отдельным аргументом. Надо подумать, как с этим быть
-        keyboard.add(reaction_buttons[0],reaction_buttons[1],reaction_buttons[2],reaction_buttons[3],reaction_buttons[4])
+        #keyboard.add(reaction_buttons[0],reaction_buttons[1],reaction_buttons[2],reaction_buttons[3],reaction_buttons[4])
+        keyboard.add(reaction_buttons)
         bot.send_message(message.chat.id, 'Этот мем как:', reply_markup=keyboard)
         try:
             sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
