@@ -92,11 +92,11 @@ def private_message(message):
         keyboard = telebot.types.InlineKeyboardMarkup()
         keyboard.row_width = 5
         emoji_challengers = [random_choice(list(EMOJI_UNICODE)) for i in range(5)]
-        reaction_args = [response.id, message.chat.id, str(emoji_challengers)]
+        #reaction_args = [response.id, message.chat.id, str(emoji_challengers)]
         reaction_buttons = []
         for emoji in emoji_challengers:
-            reaction_args_full = reaction_args.copy()
-            reaction_args_full.append(emoji)
+            #reaction_args_full = reaction_args.copy()
+            #reaction_args_full.append(emoji)
             reaction_buttons.append(telebot.types.InlineKeyboardButton(text=emojize(emoji),callback_data='d'))#, callback_data=json.dumps(reaction_args_full)))
         keyboard.add(tuple(reaction_buttons))
         bot.send_message(message.chat.id, 'Этот мем как:', reply_markup=keyboard)
