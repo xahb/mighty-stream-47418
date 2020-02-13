@@ -5,7 +5,7 @@ import re
 from random import random, choice as random_choice
 from emoji import emojize, demojize
 from emoji.unicode_codes import EMOJI_UNICODE
-import yaml
+import pickle
 
 import telebot
 from telebot import apihelper
@@ -28,7 +28,7 @@ from sqlalchemy import create_engine
 engine = create_engine(DATABASE_URL)
 
 from sqlalchemy import func
-from sql_queries import SqlMessage, SqlUser, SqlChat, SqlReaction, Base
+from sql_queries import SqlMessage, SqlUser, SqlChat, SqlReaction, SqlKeyReaction, Base
 
 # Создание таблицы
 Base.metadata.create_all(engine) 
@@ -90,10 +90,11 @@ def private_message(message):
         response = session.query(SqlMessage).order_by(func.random()).first()
         bot.forward_message(message.chat.id, response.chat_id, response.message_id)
         keyboard = telebot.types.InlineKeyboardMarkup()
-        keyboard.row_width = 3
-        emoji_challengers = [random_choice(list(EMOJI_UNICODE)) for i in range(9)]
+        keyboard.row_width = 5
+        emoji_challengers = [random_choice(list(EMOJI_UNICODE)) for i in range(20)]
+        reaction_args = [response.id, message.chat_id, str(emoji_challengers)]
         for emoji in emoji_challengers:
-            keyboard.add(telebot.types.InlineKeyboardButton(text=emojize(emoji), callback_data=str([emoji,emoji_challengers,response])))
+            keyboard.add(telebot.types.InlineKeyboardButton(text=emojize(emoji), callback_data=pickle.dumps(reaction_args.append(emoji))))
         bot.send_message(message.chat.id, 'Этот мем как:', reply_markup=keyboard)
         try:
             sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
@@ -107,9 +108,9 @@ def private_message(message):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
     session = Session()
-    cb_data = yaml.load(callback.data)
-    sql_key_response = SqlKeyResponse(cb_data[2], cb_data[1], cb_data[0])
-    session.add(sql_key_response)
+    cb_data = pickle.loads(call.data)
+    sql_key_reaction = SqlKeyReaction(cb_data[0], cb_data[1], cb_data[2], cb_data[3])
+    session.add(sql_key_reaction)
     session.commit()
 
 @bot.message_handler(func=lambda message: message.chat.type=='group', content_types=['text'])

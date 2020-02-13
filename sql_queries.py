@@ -135,24 +135,23 @@ class SqlReaction(Base):
 
 
 class SqlKeyReaction(Base):
+    '''
+    Работает только в личке, т.к. я пока хз, как в групповом чате получить user_id юзера, тапнувшего кнопку. 
+    Сейчас логика идентификации - через chat_id, в котором тапается кнопка.
+    '''
     __tablename__ = 'key_reactions'
-    id = Column(BigInteger, primary_key=True)
-    meme_message_id = Column(BigInteger)
-    user_id = Column(Integer)
-    chat_id = Column(Integer)
-    date = Column(DateTime)
+    id = Column(String, primary_key=True) #На будущее - подумать, какой лучше ключ сделать для этой таблицы
+    meme_id = Column(BigInteger)
+    reaction_chat_id = Column(Integer)
+    reaction_date = Column(DateTime)
     emoji_challengers = Column(String)
     emoji_winner = Column(String)
     
-    def __init__(self, message, challengers, winner):
-        self.id = int(str(message.chat.id)+str(message.message_id))
-        self.origin_message_id = message.message_id
-        try:
-            self.from_user_id = message.from_user.id
-        except:
-            self.from_user_id = 0
-        self.chat_id = message.chat.id
-        self.date = datetime.fromtimestamp(message.date)
+    def __init__(self, meme_id, reaction_chat_id, challengers, winner):
+        self.id = str(meme_id)+str(reaction_chat_id)+str(datetime.now())
+        self.meme_id = meme_id
+        self.reaction_chat_id = reaction_chat_id
+        self.reaction_date = datetime.now()
         self.emoji_challengers = challengers
         self.emoji_winner = winner
 
