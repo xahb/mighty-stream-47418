@@ -92,13 +92,13 @@ def private_message(message):
         keyboard = telebot.types.InlineKeyboardMarkup()
         keyboard.row_width = 5
         emoji_challengers = [random_choice(list(EMOJI_UNICODE)) for i in range(20)]
-        reaction_args = [response.id, message.chat.id, str(emoji_challengers)]
+        reaction_args = [111, message.chat.id, str(emoji_challengers)]
         reaction_buttons = []
         for emoji in emoji_challengers:
             reaction_args_full = reaction_args.copy()
             reaction_args_full.append(emoji)
             reaction_buttons.append(telebot.types.InlineKeyboardButton(text=emojize(emoji), 
-            callback_data='vv'))#json.dumps(reaction_args_full)))
+            callback_data=json.dumps(reaction_args_full)))
         #в след строке дичь, потому что метод add не принимает list или tuple, а каждую кнопку считает отдельным аргументом. Надо подумать, как с этим быть
         keyboard.add(reaction_buttons[0],reaction_buttons[1],reaction_buttons[2],reaction_buttons[3],reaction_buttons[4])
         bot.send_message(message.chat.id, 'Этот мем как:', reply_markup=keyboard)
