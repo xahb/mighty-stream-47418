@@ -90,8 +90,8 @@ def private_message(message):
         response = session.query(SqlMessage).order_by(func.random()).first()
         bot.forward_message(message.chat.id, response.chat_id, response.message_id)
         keyboard = telebot.types.InlineKeyboardMarkup()
-        keyboard.row_width = 5
-        emoji_challengers = [random_choice(list(EMOJI_UNICODE)) for i in range(5)]
+        keyboard.row_width = 3
+        emoji_challengers = [random_choice(list(EMOJI_UNICODE)) for i in range(3)]
         reaction_args = [response.id, message.chat.id, str(emoji_challengers)]
         reaction_buttons = []
         for emoji in emoji_challengers:
