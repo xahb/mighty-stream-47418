@@ -91,17 +91,17 @@ def private_message(message):
         bot.forward_message(message.chat.id, response.chat_id, response.message_id)
         keyboard = telebot.types.InlineKeyboardMarkup()
         keyboard.row_width = 5
-        emoji_challengers = [random_choice(list(EMOJI_UNICODE)) for i in range(20)]
-        reaction_args = [111, message.chat.id, str(emoji_challengers)]
-        reaction_buttons = []
+        EMOJI_UNICODE_LIST = list(EMOJI_UNICODE)
+        emoji_challengers = [random_choice(EMOJI_UNICODE_LIST) for i in range(20)]
+        sql_key_reaction = SqlKeyReaction(response.id, message.chat.id, str(emoji_challengers), '0')
+        session.add(sql_key_reaction)
+        rb = []
         for emoji in emoji_challengers:
-            reaction_args_full = reaction_args.copy()
-            reaction_args_full.append(emoji)
-            reaction_buttons.append(telebot.types.InlineKeyboardButton(text=emojize(emoji), 
-            callback_data='vv'))#json.dumps(reaction_args_full)))
+            rb.append(telebot.types.InlineKeyboardButton(text=emojize(emoji), 
+            callback_data=json.dumps([sql_key_reaction.id,emoji]))
         #в след строке дичь, потому что метод add не принимает list или tuple, а каждую кнопку считает отдельным аргументом. Надо подумать, как с этим быть
-        keyboard.add(reaction_buttons[0],reaction_buttons[1],reaction_buttons[2],reaction_buttons[3],reaction_buttons[4])
-        #keyboard.add(reaction_buttons)
+        #keyboard.add(rb[0],rb[1],rb[2],rb[3],rb[4],rb[5],rb[6],rb[7],rb[8],rb[9],rb[10],rb[11],rb[12],rb[13],rb[14],rb[15],rb[16],rb[17],rb[18],rb[19])
+        keyboard.add(*rb)
         bot.send_message(message.chat.id, 'Этот мем как:', reply_markup=keyboard)
         try:
             sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
@@ -116,8 +116,8 @@ def private_message(message):
 def callback_query(call):
     session = Session()
     cb_data = json.loads(call.data)
-    sql_key_reaction = SqlKeyReaction(cb_data[0], cb_data[1], cb_data[2], cb_data[3])
-    session.add(sql_key_reaction)
+    sql_key_reaction = session.query(SqlKeyReaction).filter_by(id=cb_data[0]).first()
+    sql_key_reaction.emoji_winner = cb_data[1]
     session.commit()
 
 @bot.message_handler(func=lambda message: message.chat.type=='group', content_types=['text'])
