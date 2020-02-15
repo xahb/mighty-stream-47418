@@ -98,7 +98,7 @@ def private_message(message):
         rb = []
         for emoji in emoji_challengers:
             rb.append(telebot.types.InlineKeyboardButton(text=emojize(emoji), 
-            callback_data=str([sql_key_reaction.id])))#json.dumps([sql_key_reaction.id,emoji])))
+            callback_data=json.dumps([sql_key_reaction.id,EMOJI_UNICODE_LIST.index(emoji)])))
         keyboard.add(*rb)
         #keyboard.add(rb[0],rb[1])
         bot.send_message(message.chat.id, 'Этот мем как:', reply_markup=keyboard)
@@ -116,7 +116,7 @@ def callback_query(call):
     session = Session()
     cb_data = json.loads(call.data)
     sql_key_reaction = session.query(SqlKeyReaction).filter_by(id=cb_data[0]).first()
-    sql_key_reaction.emoji_winner = cb_data[1]
+    sql_key_reaction.emoji_winner = EMOJI_UNICODE_LIST[cb_data[1]]
     session.commit()
 
 @bot.message_handler(func=lambda message: message.chat.type=='group', content_types=['text'])
