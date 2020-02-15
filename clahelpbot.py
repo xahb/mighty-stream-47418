@@ -5,6 +5,7 @@ import re
 from random import random, choice as random_choice
 from emoji import emojize, demojize
 from emoji.unicode_codes import EMOJI_UNICODE
+EMOJI_UNICODE_LIST = list(EMOJI_UNICODE)
 import json
 
 import telebot
@@ -91,7 +92,6 @@ def private_message(message):
         bot.forward_message(message.chat.id, response.chat_id, response.message_id)
         keyboard = telebot.types.InlineKeyboardMarkup()
         keyboard.row_width = 5
-        EMOJI_UNICODE_LIST = list(EMOJI_UNICODE)
         emoji_challengers = [random_choice(EMOJI_UNICODE_LIST) for i in range(20)]
         sql_key_reaction = SqlKeyReaction(response.id, message.chat.id, str(emoji_challengers), '0')
         session.add(sql_key_reaction)
