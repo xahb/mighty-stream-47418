@@ -98,9 +98,9 @@ def private_message(message):
         rb = []
         for emoji in emoji_challengers:
             rb.append(telebot.types.InlineKeyboardButton(text=emojize(emoji), 
-            callback_data=str([sql_key_reaction.id,emoji])))#json.dumps([sql_key_reaction.id,emoji])))
-        #keyboard.add(*rb)
-        keyboard.add(rb[0],rb[1])
+            callback_data=str([sql_key_reaction.id])))#json.dumps([sql_key_reaction.id,emoji])))
+        keyboard.add(*rb)
+        #keyboard.add(rb[0],rb[1])
         bot.send_message(message.chat.id, 'Этот мем как:', reply_markup=keyboard)
         try:
             sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
