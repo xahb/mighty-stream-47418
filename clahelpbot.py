@@ -98,9 +98,7 @@ def private_message(message):
         rb = []
         for emoji in emoji_challengers:
             rb.append(telebot.types.InlineKeyboardButton(text=emojize(emoji), 
-            callback_data=json.dumps([sql_key_reaction.id,emoji]))
-        #в след строке дичь, потому что метод add не принимает list или tuple, а каждую кнопку считает отдельным аргументом. Надо подумать, как с этим быть
-        #keyboard.add(rb[0],rb[1],rb[2],rb[3],rb[4],rb[5],rb[6],rb[7],rb[8],rb[9],rb[10],rb[11],rb[12],rb[13],rb[14],rb[15],rb[16],rb[17],rb[18],rb[19])
+            callback_data=json.dumps([sql_key_reaction.id,emoji])))
         keyboard.add(*rb)
         bot.send_message(message.chat.id, 'Этот мем как:', reply_markup=keyboard)
         try:
