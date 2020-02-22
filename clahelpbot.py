@@ -37,17 +37,17 @@ Base.metadata.create_all(engine)
 from sqlalchemy.orm import sessionmaker
 Session = sessionmaker(bind=engine)
 
-help_instruction = '''Hi! Forward a meme (post with photo or gif) to this chat and bot will save it (with no connection to you). 
-                    Tap "Go!" and bot will forward you one of the saved memes. Rate it and get you'll get better memes next time!
-    '''
+help_instruction = '''Hi! Forward a meme (post with photo or gif) to this chat and bot will save it (with no connection to you).
+Tap "Go!" and bot will forward you one of the saved memes. Rate it and get you'll get better memes next time!
+'''
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
     keyboard1 = telebot.types.ReplyKeyboardMarkup()
     keyboard1.row_width = 2
-    keyboard1.add(telebot.types.InlineKeyboardButton(text='Go! '+emojize(':cat_face_with_wry_smile:')))
-    keyboard1.add(telebot.types.InlineKeyboardButton(text='Stats '+emojize(':chart_increasing:')))
-    bot.reply_to(message, help_instruction)
+    keyboard1.add('Go! '+emojize(':cat_face_with_wry_smile:'),'Stats '+emojize(':chart_increasing:'))
+    #keyboard1.add(telebot.types.InlineKeyboardButton(text='Stats '+emojize(':chart_increasing:')))
+    bot.reply_to(message, help_instruction, reply_markup=keyboard1)
     #bot.reply_to(message, 'Привет, ' + message.from_user.first_name.decode('utf-8').encode('utf-8', 'replace') + '!')
 
 @bot.message_handler(commands=['help'])
