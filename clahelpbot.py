@@ -53,6 +53,10 @@ def start_command(message):
 @bot.message_handler(commands=['help'])
 def help_command(message):
     bot.reply_to(message, help_instruction)
+
+@bot.message_handler(commands=['esc'])
+def esc_command(message):
+    bot.reply_to(message, 'Keyboard removed', reply_markup=telebot.types.ReplyKeyboardRemove())
     
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['photo','document'])
 def write_photo(message):
