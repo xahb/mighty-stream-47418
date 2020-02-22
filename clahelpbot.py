@@ -43,11 +43,11 @@ help_instruction = '''Hi! Forward a meme (post with photo or gif) to this chat a
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
-    keyboard = telebot.types.ReplyKeyboardMarkup()
-    keyboard.row_width = 2
-    keyboard.add(telebot.types.InlineKeyboardButton(text='Go! '+emojize(':cat_face_with_wry_smile:')))
-    keyboard.add(telebot.types.InlineKeyboardButton(text='Stats '+emojize(':chart_increasing:')))
-    bot.reply_to(message, help_instruction, reply_markup=keyboard)
+    keyboard1 = telebot.types.ReplyKeyboardMarkup()
+    keyboard1.row_width = 2
+    keyboard1.add(telebot.types.InlineKeyboardButton(text='Go! '+emojize(':cat_face_with_wry_smile:')))
+    keyboard1.add(telebot.types.InlineKeyboardButton(text='Stats '+emojize(':chart_increasing:')))
+    bot.reply_to(message, help_instruction, reply_markup=keyboard1)
     #bot.reply_to(message, 'Привет, ' + message.from_user.first_name.decode('utf-8').encode('utf-8', 'replace') + '!')
 
 @bot.message_handler(commands=['help'])
