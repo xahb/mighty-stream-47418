@@ -103,7 +103,7 @@ def private_message(message):
         bot.forward_message(message.chat.id, response.chat_id, response.message_id)
         keyboard = telebot.types.InlineKeyboardMarkup()
         keyboard.row_width = 5
-        emoji_challengers = [':rofl:',':slight_smile:',':unamused:',':frowning:',':flushed:']+[random_choice(EMOJI_UNICODE_LIST) for i in range(15)]
+        emoji_challengers = [':rolling_on_the_floor_laughing:',':slightly_smiling_face:',':unamused_face:',':frowning_face_with_open_mouth:',':flushed_face:']+[random_choice(EMOJI_UNICODE_LIST) for i in range(15)]
         sql_key_reaction = SqlKeyReaction(response.id, message.chat.id, str(emoji_challengers), '0')
         session.add(sql_key_reaction)
         rb = []
