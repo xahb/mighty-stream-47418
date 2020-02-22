@@ -47,7 +47,7 @@ def start_command(message):
     keyboard1.row_width = 2
     keyboard1.add(telebot.types.InlineKeyboardButton(text='Go! '+emojize(':cat_face_with_wry_smile:')))
     keyboard1.add(telebot.types.InlineKeyboardButton(text='Stats '+emojize(':chart_increasing:')))
-    bot.reply_to(message, help_instruction, reply_markup=keyboard1)
+    bot.reply_to(message, help_instruction)
     #bot.reply_to(message, 'Привет, ' + message.from_user.first_name.decode('utf-8').encode('utf-8', 'replace') + '!')
 
 @bot.message_handler(commands=['help'])
@@ -108,7 +108,7 @@ def private_message(message):
             callback_data=json.dumps([sql_key_reaction.id,EMOJI_UNICODE_LIST.index(emoji)])))
         keyboard.add(*rb)
         #keyboard.add(rb[0],rb[1])
-        bot.send_message(message.chat.id, 'Этот мем как:', reply_markup=keyboard)
+        bot.send_message(message.chat.id, 'Rate as:', reply_markup=keyboard)
         try:
             sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
         except:
