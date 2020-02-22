@@ -37,15 +37,22 @@ Base.metadata.create_all(engine)
 from sqlalchemy.orm import sessionmaker
 Session = sessionmaker(bind=engine)
 
+help_instruction = '''Hi! Forward a meme (post with photo or gif) to this chat and bot will save it (with no connection to you). 
+                    Tap "Go!" and bot will forward you one of the saved memes. Rate it and get you'll get better memes next time!
+    '''
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
-    bot.reply_to(message, message.from_user.first_name.decode('utf-8').encode('utf-8', 'replace'))
+    keyboard = telebot.types.ReplyKeyboardMarkup()
+    keyboard.row_width = 2
+    keyboard.add(telebot.types.InlineKeyboardButton(text='Go! '+emojize(':cat_face_with_wry_smile:')))
+    keyboard.add(telebot.types.InlineKeyboardButton(text='Stats '+emojize(':chart_increasing:')))
+    bot.reply_to(message, help_instruction, reply_markup=keyboard)
     #bot.reply_to(message, 'Привет, ' + message.from_user.first_name.decode('utf-8').encode('utf-8', 'replace') + '!')
 
 @bot.message_handler(commands=['help'])
 def help_command(message):
-    bot.reply_to(message, '''Можешб обращаться "бот" или "пёс"''')
+    bot.reply_to(message, help_instruction)
     
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['photo','document'])
 def write_photo(message):
@@ -69,7 +76,7 @@ def write_photo(message):
         session.add(sql_user)
 
     session.commit()
-    bot.reply_to(message, 'Сохранил '+str(message.message_id)+' от '+str(message.from_user.first_name))
+    bot.reply_to(message, 'Saved '+str(message.message_id)+' from '+str(message.from_user.first_name))
 
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['text'])
 def private_message(message):
@@ -86,13 +93,13 @@ def private_message(message):
         scenarios.movie_scenario(message,bot)
     elif re.search('[Аа]н[еи]к', message.text):
         scenarios.anek_scenario(message, bot)
-    elif re.search('[Мм]ем', message.text):
+    elif re.search('Go!', message.text):
         session = Session()
         response = session.query(SqlMessage).order_by(func.random()).first()
         bot.forward_message(message.chat.id, response.chat_id, response.message_id)
         keyboard = telebot.types.InlineKeyboardMarkup()
         keyboard.row_width = 5
-        emoji_challengers = [random_choice(EMOJI_UNICODE_LIST) for i in range(20)]
+        emoji_challengers = [':rofl:',':slight_smile:',':unamused:',':frowning:',':flushed:']+[random_choice(EMOJI_UNICODE_LIST) for i in range(15)]
         sql_key_reaction = SqlKeyReaction(response.id, message.chat.id, str(emoji_challengers), '0')
         session.add(sql_key_reaction)
         rb = []
