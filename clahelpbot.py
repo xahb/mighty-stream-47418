@@ -83,9 +83,9 @@ def show_stats(message):
     session = Session()
     try:
         sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
-        sql_chat.messages_shared  = 2 #session.query(func.count(SqlMessage)).filter_by(chat_id=message.chat.id)
-        sql_chat.messages_received  = 2 #session.query(func.count(SqlKeyReaction)).filter_by(reaction_chat_id=message.chat.id)
-        sql_chat.messages_rated  = 2 #session.query(func.count(SqlKeyReaction)).filter(SqlKeyReaction.reaction_chat_id==message.chat.id, SqlKeyReaction.emoji_winner!='0')
+        sql_chat.messages_shared  = session.query(func.count(SqlMessage.id)).filter_by(chat_id=message.chat.id)
+        sql_chat.messages_received  = session.query(func.count(SqlKeyReaction.id)).filter_by(reaction_chat_id=message.chat.id)
+        sql_chat.messages_rated  = session.query(func.count(SqlKeyReaction.id)).filter(SqlKeyReaction.reaction_chat_id==message.chat.id, SqlKeyReaction.emoji_winner!='0')
     except:
         sql_chat = SqlChat(message)
         session.add(sql_chat)
