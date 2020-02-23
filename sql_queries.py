@@ -90,9 +90,9 @@ class SqlUser(Base):
         self.last_name = message.from_user.last_name
         self.username = message.from_user.username
         self.messages_count = 1
-        self.messages_shared = -1
-        self.messages_received = -1
-        self.messages_rated = -1
+        self.messages_shared = 1
+        self.messages_received = 0
+        self.messages_rated = 0
 
 
 class SqlChat(Base):
@@ -120,7 +120,7 @@ class SqlChat(Base):
         self.all_members_are_administrators = str(message.chat.all_members_are_administrators)
         self.messages_count = 1
         self.state_0 = 0
-        self.messages_shared = 0
+        self.messages_shared = 1
         self.messages_received = 0
         self.messages_rated = 0
 
