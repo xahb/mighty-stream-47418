@@ -34,12 +34,12 @@ Base.metadata.create_all(engine)
 from sqlalchemy.orm import sessionmaker
 Session = sessionmaker(bind=engine)
 
-help_instruction = '''Hi! Forward a meme (post with photo or gif) to this chat and bot will save it (with no connection to you).
-Tap "Go!" and bot will forward you one of the saved memes. Rate it and you'll get better memes next time!
+help_instruction = '''Hi! Forward a meme (post with photo or gif) to this chat and Bot will save it (with no connection to you).
+Tap "Go!" and Bot will forward you one of the saved memes. Rate it and you'll get better memes next time!
 '''
 
 def __main_keyboard__():
-    keyboard = telebot.types.ReplyKeyboardMarkup()
+    keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row_width = 2
     keyboard.add('Go! '+emojize(':cat_face_with_wry_smile:'),'Stats '+emojize(':chart_increasing:'))
     return keyboard
@@ -51,7 +51,7 @@ def start_command(message):
     
 @bot.message_handler(commands=['help'])
 def help_command(message):
-    bot.reply_to(message, help_instruction)
+    bot.reply_to(message, help_instruction, reply_markup=__main_keyboard__())
 
 @bot.message_handler(commands=['esc'])
 def esc_command(message):
@@ -64,19 +64,42 @@ def save_meme(message):
     session.add(sql_message)
     try:
         sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
-        sql_chat.messages_count += 1
+        #sql_chat.messages_count += 1
     except:
         sql_chat = SqlChat(message)
         session.add(sql_chat)
     sql_chat.state_0 = sql_message.id   
     try:
         sql_user = session.query(SqlUser).filter_by(id=message.from_user.id).first()
-        sql_user.messages_count += 1
+        #sql_user.messages_count += 1
     except:
         sql_user = SqlUser(message)
         session.add(sql_user)
     session.commit()
     bot.reply_to(message, 'Saved '+str(message.message_id)+' from '+str(message.from_user.first_name))
+
+@bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['text'], regexp='Stats ')
+def show_stats(message):
+    session = Session()
+    try:
+        sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
+        sql_chat.messages_shared  = session.query(func.count(SqlMessage)).filter_by(chat_id=message.chat.id)
+        sql_chat.messages_received  = session.query(func.count(SqlKeyReaction)).filter_by(reaction_chat_id=message.chat.id)
+        sql_chat.messages_rated  = session.query(func.count(SqlKeyReaction)).filter(SqlKeyReaction.reaction_chat_id==message.chat.id, SqlKeyReaction.emoji_winner!='0')
+    except:
+        sql_chat = SqlChat(message)
+        session.add(sql_chat)
+    try:
+        # для групповых чатов логика не подойдет, но пока вроде и не надо
+        sql_user = session.query(SqlUser).filter_by(id=message.from_user.id).first()
+        sql_user.messages_shared  = sql_chat.messages_shared
+        sql_user.messages_received  = sql_chat.messages_received
+        sql_user.messages_rated  = sql_chat.messages_rated
+    except:
+        sql_user = SqlUser(message)
+        session.add(sql_user)
+    bot.reply_to(message, '''You've shared %s memes with Bot \nYou've received %s memes from Bot \nYou've rated %s memes''' % (sql_chat.messages_shared, sql_chat.messages_received, sql_chat.messages_rated))
+    session.commit()
 
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['text'], regexp='Go!')
 def forward_meme(message):

@@ -80,6 +80,9 @@ class SqlUser(Base):
     last_name = Column(String)
     username = Column(String)
     messages_count = Column(Integer)
+    messages_shared = Column(Integer)
+    messages_received = Column(Integer)
+    messages_rated = Column(Integer)
     
     def __init__(self, message):
         self.id = message.from_user.id
@@ -87,6 +90,9 @@ class SqlUser(Base):
         self.last_name = message.from_user.last_name
         self.username = message.from_user.username
         self.messages_count = 1
+        self.messages_shared = 0
+        self.messages_received = 0
+        self.messages_rated = 0
 
 
 class SqlChat(Base):
@@ -100,6 +106,9 @@ class SqlChat(Base):
     all_members_are_administrators = Column(String)
     messages_count = Column(Integer)
     state_0 = Column(BigInteger)    #id of message that bot posted in chat (to collect reactions)
+    messages_shared = Column(Integer)
+    messages_received = Column(Integer)
+    messages_rated = Column(Integer)
     
     def __init__(self, message):
         self.id = message.chat.id
@@ -111,6 +120,9 @@ class SqlChat(Base):
         self.all_members_are_administrators = str(message.chat.all_members_are_administrators)
         self.messages_count = 1
         self.state_0 = 0
+        self.messages_shared = 0
+        self.messages_received = 0
+        self.messages_rated = 0
 
 
 class SqlReaction(Base):
