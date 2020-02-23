@@ -154,11 +154,3 @@ class SqlKeyReaction(Base):
         self.reaction_date = datetime.now()
         self.emoji_challengers = challengers
         self.emoji_winner = winner
-
-
-
-insert_memes='''INSERT INTO public.memes (message_id, from_user_id, date, chat_id, forward_from_id, forward_date, reply_to_message_id, ) 
-                 VALUES (%s, %s, %s, %s, %s);'''
-
-
-insert_users="INSERT INTO public.users (user_id, user_first_name, user_last_name, username, ) VALUES (%s, %s, %s, %s, %s);" 
