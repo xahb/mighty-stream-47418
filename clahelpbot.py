@@ -11,7 +11,7 @@ import json
 import telebot
 from telebot import apihelper
 from flask import Flask, request
-from psycopg2 import connect
+#from psycopg2 import connect
 
    
 token = os.environ['TOKEN']
@@ -19,8 +19,8 @@ bot = telebot.TeleBot(token)
 server = Flask(__name__)
 
 DATABASE_URL = os.environ['DATABASE_URL']
-conn = connect(DATABASE_URL, sslmode='require')
-cur = conn.cursor()
+#conn = connect(DATABASE_URL, sslmode='require')
+#cur = conn.cursor()
 
 from sqlalchemy import create_engine
 engine = create_engine(DATABASE_URL)
@@ -62,21 +62,23 @@ def save_meme(message):
     session = Session()
     sql_message = SqlMessage(message)
     session.add(sql_message)
-    try:
-        sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
-        #sql_chat.messages_count += 1
-    except:
+    
+    sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
+    
+    if type(sql_chat) is None:
         sql_chat = SqlChat(message)
         session.add(sql_chat)
-    sql_chat.state_0 = sql_message.id   
-    try:
-        sql_user = session.query(SqlUser).filter_by(id=message.from_user.id).first()
-        #sql_user.messages_count += 1
-    except:
+        sql_chat.state_0 = sql_message.id   
+    
+    sql_user = session.query(SqlUser).filter_by(id=message.from_user.id).first()
+    
+    if type(sql_user) is None:
         sql_user = SqlUser(message)
         session.add(sql_user)
+
     session.commit()
     bot.reply_to(message, 'Saved '+str(message.message_id)+' from '+str(message.from_user.first_name))
+
 
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['text'], regexp='Stats ')
 def show_stats(message):
@@ -101,6 +103,7 @@ def show_stats(message):
     bot.reply_to(message, '''You've shared %s memes with Bot \nYou've received %s memes from Bot \nYou've rated %s memes''' % (sql_chat.messages_shared, sql_chat.messages_received, sql_chat.messages_rated))
     session.commit()
 
+    
 @bot.message_handler(func=lambda message: message.chat.type=='private', content_types=['text'], regexp='Go!')
 def forward_meme(message):
     session = Session()
@@ -114,7 +117,12 @@ def forward_meme(message):
         pass
     session = Session()
     response = session.query(SqlMessage).order_by(func.random()).first()
-    bot.forward_message(message.chat.id, response.chat_id, response.message_id)
+    #Почему-то не работает
+    if type(response) is None:
+        bot.reply_to(message, '''Hmm''')
+    else:
+        bot.forward_message(message.chat.id, response.chat_id, response.message_id)
+    
     keyboard = telebot.types.InlineKeyboardMarkup()
     keyboard.row_width = 5
     emoji_challengers = [':rolling_on_the_floor_laughing:',':slightly_smiling_face:',':unamused_face:',':frowning_face_with_open_mouth:',':flushed_face:']+[random_choice(EMOJI_UNICODE_LIST) for i in range(10)]
@@ -126,13 +134,14 @@ def forward_meme(message):
         callback_data=json.dumps([sql_key_reaction.id,EMOJI_UNICODE_LIST.index(emoji)])))
     keyboard.add(*rb)
     bot.send_message(message.chat.id, 'Rate it:', reply_markup=keyboard)
-    try:
-        sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
-    except:
+
+    sql_chat = session.query(SqlChat).filter_by(id=message.chat.id).first()
+    
+    if type(sql_chat) is None:
         sql_chat = SqlChat(message)
-        sql_chat.messages_count = 0
         session.add(sql_chat)
-    sql_chat.state_0 = response.id
+        sql_chat.state_0 = response.id 
+    
     session.commit()
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -148,12 +157,16 @@ def callback_query(call):
 def getMessage():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
     return "!", 200
-
+'''
 @server.route("/")
 def webhook():
     bot.remove_webhook()
     bot.set_webhook(url="https://mighty-stream-47418.herokuapp.com/bot")
     return "!", 200
+'''
+bot.remove_webhook()
+bot.infinity_polling()
+
 
 if __name__ == '__main__':
 	server.run(host="0.0.0.0", port=os.environ.get('PORT', 5000))

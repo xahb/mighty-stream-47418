@@ -6,6 +6,7 @@ Created on Sat Nov  2 20:59:10 2019
 """
 
 from sqlalchemy import Column, BigInteger, DateTime, Integer, String 
+#from sqlalchemy import Column, BigInteger, Integer, String 
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 from emoji import demojize
@@ -117,7 +118,7 @@ class SqlChat(Base):
         self.username = message.chat.username
         self.first_name = message.chat.first_name
         self.last_name = message.chat.last_name
-        self.all_members_are_administrators = str(message.chat.all_members_are_administrators)
+        #self.all_members_are_administrators = str(message.chat.all_members_are_administrators)
         self.messages_count = 1
         self.state_0 = 0
         self.messages_shared = 1
